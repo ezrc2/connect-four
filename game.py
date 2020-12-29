@@ -3,7 +3,12 @@ import pygame
 RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 BLUE = (0, 0, 255)
+WHITE = (255, 255, 255)
+
+ROWS = 6
+COLUMNS = 7
 SQUARE_SIZE = 100
+CIRCLE_RADIUS = 40
 
 class ConnectFour:
 
@@ -11,14 +16,30 @@ class ConnectFour:
         pygame.display.init()
         self.display = pygame.display.set_mode((700, 600))
         pygame.display.set_caption("Connect Four")
-        
-        self.rows = 6
-        self.columns = 7
-        self.board = [[0 for j in range(self.columns)] for i in range(self.rows)]
 
+        self.board = [[0 for j in range(COLUMNS)] for i in range(ROWS)]
 
+    def draw_board(self):
+        pygame.draw.rect(self.display, BLUE, (0, 0, COLUMNS * SQUARE_SIZE, ROWS * SQUARE_SIZE))
+
+        for i in range(ROWS):
+            for j in range(COLUMNS):
+                center = (j * SQUARE_SIZE + 0.5 * SQUARE_SIZE, i * SQUARE_SIZE + 0.5 * SQUARE_SIZE)
+                if self.board[i][j] == 0:
+                    color = WHITE
+                elif self.board[i][j] == 1:
+                    color = RED
+                elif self.board[i][j] == 2:
+                    color = YELLOW
+                
+                pygame.draw.circle(self.display, color, center, CIRCLE_RADIUS)
+
+        pygame.display.update()
 
 
 if __name__ == "__main__":
     a = ConnectFour()
+    for i in range(2000):
+        a.draw_board()
+
     
