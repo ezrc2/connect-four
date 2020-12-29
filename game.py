@@ -1,3 +1,4 @@
+import sys
 import pygame
 
 RED = (255, 0, 0)
@@ -31,15 +32,23 @@ class ConnectFour:
                     color = RED
                 elif self.board[i][j] == 2:
                     color = YELLOW
-                
                 pygame.draw.circle(self.display, color, center, CIRCLE_RADIUS)
 
+
+def main():
+    pygame.init()
+    game = ConnectFour()
+    clock = pygame.time.Clock()
+    while True:
+        game.draw_board()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+
         pygame.display.update()
+        clock.tick(60)
 
 
 if __name__ == "__main__":
-    a = ConnectFour()
-    for i in range(2000):
-        a.draw_board()
-
-    
+    main()
