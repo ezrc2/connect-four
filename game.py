@@ -24,22 +24,18 @@ class ConnectFour:
         pygame.display.set_caption("Connect Four")
 
         self.board = [[EMPTY for j in range(COLUMNS)] for i in range(ROWS)]
+        self.human_turn = True
 
     def run_game_loop(self):
         clock = pygame.time.Clock()
         while True:
-            game.draw_board()
+            self.draw_board()
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    mouse_x = event.pos[0]
-                    for j in range(COLUMNS):
-                        if j * SQUARE_SIZE <= mouse_x < (j + 1) * SQUARE_SIZE:
-                            self.drop_piece(j, HUMAN)
-                            break
-
+                    self.handle_mouse_click(event)
 
             pygame.display.update()
             clock.tick(60)
@@ -59,10 +55,22 @@ class ConnectFour:
                 pygame.draw.circle(self.display, color, center, CIRCLE_RADIUS)
 
     def drop_piece(self, column, player):
-        for i in range(ROWS):
-            if (self.board[i][column] == EMPTY):
-                pass
+        for i in range(ROWS - 1, -1, -1):
+            if self.board[i][column] == EMPTY:
+                self.board[i][column] = player
+                break
+
+    def handle_mouse_click(self, event):
+        mouse_x = event.pos[0]
+        for j in range(COLUMNS):
+            if j * SQUARE_SIZE <= mouse_x < (j + 1) * SQUARE_SIZE:
+                if self.human_turn:
+                    self.drop_piece(j, HUMAN)
+                    self.human_turn = not self.human_turn
+                    break
+                else:
+                    self.drop_piece(j, COMPUTER)
+                    self.human_turn = not self.human_turn
 
 if __name__ == "__main__":
-    game = ConnectFour()
-    game.run_game_loop()
+    ConnectFour().run_game_loop()
