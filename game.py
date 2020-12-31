@@ -6,6 +6,7 @@ RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 BLUE = (0, 0, 255)
 WHITE = (255, 255, 255)
+GREY = (150, 150, 150)
 
 EMPTY = 0
 HUMAN = 1
@@ -52,7 +53,8 @@ class ConnectFour:
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.handle_mouse_click(event)
-
+                
+            self.shade_next_move(pygame.mouse.get_pos()[0])
             pygame.display.update()
             clock.tick(60)
 
@@ -80,6 +82,16 @@ class ConnectFour:
         for i in range(ROWS - 1, -1, -1):
             if self.board[i][column] == EMPTY:
                 self.board[i][column] = player
+                break
+
+    def shade_next_move(self, mouse_x):
+        for j in range(COLUMNS):
+            if j * SQUARE_SIZE <= mouse_x < (j + 1) * SQUARE_SIZE:
+                next_row = ROWS - 1
+                while self.board[next_row][j] != EMPTY:
+                    next_row -= 1
+                center = ((j  +  0.5) * SQUARE_SIZE, (next_row  +  0.5) * SQUARE_SIZE)
+                pygame.draw.circle(self.display, GREY, center, CIRCLE_RADIUS)
                 break
 
     def handle_mouse_click(self, event):
