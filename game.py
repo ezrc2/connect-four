@@ -38,7 +38,6 @@ class ConnectFour:
         is_game_over = False
         while not is_game_over:
             self.draw_board()
-            
             if self.check_win(HUMAN):
                 text = self.font.render("You win!", True, BLACK)
                 self.display.blit(text, TEXT_LOCATION)
@@ -58,7 +57,10 @@ class ConnectFour:
             clock.tick(60)
 
         if is_game_over:
-            pygame.time.wait(3000)
+            while True:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        sys.exit()
 
     def draw_board(self):
         pygame.draw.rect(self.display, BLUE, (0, 0, COLUMNS * SQUARE_SIZE, ROWS * SQUARE_SIZE))
@@ -97,25 +99,31 @@ class ConnectFour:
         # Check rows
         for row in range(ROWS):
             for col in range(COLUMNS - 3):
-                if self.board[row][col] == player and self.board[row][col + 1] == player and self.board[row][col + 2] == player and self.board[row][col + 3] == player:
+                if self.board[row][col] == player and self.board[row][col + 1] == player and \
+                    self.board[row][col + 2] == player and self.board[row][col + 3] == player:
                     return True
 
         # Check columns
         for row in range(ROWS - 3):
             for col in range(COLUMNS):
-                if self.board[row][col] == player and self.board[row + 1][col] == player and self.board[row + 2][col] == player and self.board[row + 3][col] == player:
+                if self.board[row][col] == player and self.board[row + 1][col] == player and \
+                    self.board[row + 2][col] == player and self.board[row + 3][col] == player:
                     return True
 
         # Check right diaganols
         for row in range(ROWS - 3):
             for col in range(COLUMNS - 3):
-                if self.board[row][col] == player and self.board[row + 1][col + 1] == player and self.board[row + 2][col + 2] == player and self.board[row + 3][col + 3] == player:
+                if self.board[row][col] == player and self.board[row + 1][col + 1] == player \
+                    and self.board[row + 2][col + 2] == player and \
+                    self.board[row + 3][col + 3] == player:
                     return True
 
         # Check left diaganols
         for row in range(3, ROWS):
             for col in range(COLUMNS - 3):
-                if self.board[row][col] == player and self.board[row -1][col + 1] == player and self.board[row - 2][col + 2] == player and self.board[row - 3][col + 3] == player:
+                if self.board[row][col] == player and self.board[row - 1][col + 1] == player and \
+                    self.board[row - 2][col + 2] == player and \
+                    self.board[row - 3][col + 3] == player:
                     return True
         return EMPTY
 
