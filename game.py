@@ -1,5 +1,6 @@
 import sys
 import pygame
+from minimax import Minimax
 
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
@@ -15,10 +16,10 @@ COMPUTER = 2
 ROWS = 6
 COLUMNS = 7
 
+LINE_WIDTH = 3
 SQUARE_SIZE = 100
 CIRCLE_RADIUS = 40
 
-FONT_SIZE = 90
 TEXT_LOCATION = (150, 175)
 
 class ConnectFour:
@@ -29,36 +30,38 @@ class ConnectFour:
         pygame.font.init()
         self.display = pygame.display.set_mode((COLUMNS * SQUARE_SIZE, ROWS * SQUARE_SIZE))
         pygame.display.set_caption("Connect Four")
-        self.font = pygame.font.SysFont("Consolas", FONT_SIZE)
+        self.font = pygame.font.SysFont("Consolas", 90)
+        
+        self.computer = Minimax()
 
         self.board = [[EMPTY for j in range(COLUMNS)] for i in range(ROWS)]
         self.human_turn = True
 
     def run_game_loop(self):
         clock = pygame.time.Clock()
-        is_game_over = False
-        while not is_game_over:
+        game_over = False
+        while not game_over:
             self.draw_board()
+
             if self.check_win(HUMAN):
                 text = self.font.render("You win!", True, BLACK)
                 self.display.blit(text, TEXT_LOCATION)
-                is_game_over = True
+                game_over = True
             elif self.check_win(COMPUTER):
                 text = self.font.render("You lose!", True, BLACK)
                 self.display.blit(text, TEXT_LOCATION)
-                is_game_over = True
+                game_over = True
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.handle_mouse_click(event)
-                
-            self.shade_next_move(pygame.mouse.get_pos()[0])
+
             pygame.display.update()
             clock.tick(60)
 
-        if is_game_over:
+        if game_over:
             while True:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -77,21 +80,12 @@ class ConnectFour:
                 elif self.board[i][j] == COMPUTER:
                     color = YELLOW
                 pygame.draw.circle(self.display, color, center, CIRCLE_RADIUS)
+                pygame.draw.circle(self.display, BLACK, center, CIRCLE_RADIUS, LINE_WIDTH)
 
-    def drop_player(self, column, player):
+    def drop_piece(self, column, player):
         for i in range(ROWS - 1, -1, -1):
             if self.board[i][column] == EMPTY:
                 self.board[i][column] = player
-                break
-
-    def shade_next_move(self, mouse_x):
-        for j in range(COLUMNS):
-            if j * SQUARE_SIZE <= mouse_x < (j + 1) * SQUARE_SIZE:
-                next_row = ROWS - 1
-                while self.board[next_row][j] != EMPTY:
-                    next_row -= 1
-                center = ((j  +  0.5) * SQUARE_SIZE, (next_row  +  0.5) * SQUARE_SIZE)
-                pygame.draw.circle(self.display, GREY, center, CIRCLE_RADIUS)
                 break
 
     def handle_mouse_click(self, event):
@@ -99,12 +93,12 @@ class ConnectFour:
         for j in range(COLUMNS):
             if j * SQUARE_SIZE <= mouse_x < (j  +  1) * SQUARE_SIZE:
                 if self.human_turn:
-                    self.drop_player(j, HUMAN)
-                    self.human_turn = not self.human_turn
+                    self.drop_piece(j, HUMAN)
+                    self.human_turn = False
                     break
                 else:
-                    self.drop_player(j, COMPUTER)
-                    self.human_turn = not self.human_turn
+                    self.drop_piece(j, COMPUTER)
+                    self.human_turn = True
                     break
 
     def check_win(self, player):
