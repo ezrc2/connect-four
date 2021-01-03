@@ -12,12 +12,19 @@ class Board():
             if self.board[i][column] == EMPTY:
                 self.board[i][column] = piece
                 break
+    
+    def get_valid_columns(self):
+        valid_columns = []
+        for j in range(self.columns):
+            column = [row[j] for row in self.board]
+            if EMPTY in column:
+                valid_columns.append(j)
+        return valid_columns
 
     def is_full(self):
         for row in self.board:
-            for value in row:
-                if value == EMPTY:
-                    return False
+            if EMPTY in row:
+                return False
         return True
 
     def won_game(self, piece):

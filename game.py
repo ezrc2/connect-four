@@ -58,9 +58,12 @@ class ConnectFour:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
-                if self.human_turn and event.type == pygame.MOUSEBUTTONDOWN:
-                    self.handle_mouse_click(mouse_column)
-                elif not self.human_turn:
+                if self.human_turn:
+                    print(mouse_column)
+                    print(self.board.get_valid_columns())
+                    if event.type == pygame.MOUSEBUTTONDOWN and mouse_column in self.board.get_valid_columns():
+                        self.handle_mouse_click(mouse_column)
+                else:
                     self.ai.find_move(self.board)
 
             if not self.human_turn:
