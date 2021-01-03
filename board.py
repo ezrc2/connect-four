@@ -1,3 +1,5 @@
+import copy
+
 EMPTY = 0
 
 class Board():
@@ -12,7 +14,7 @@ class Board():
             if self.board[i][column] == EMPTY:
                 self.board[i][column] = piece
                 break
-    
+
     def get_valid_columns(self):
         valid_columns = []
         for j in range(self.columns):
@@ -21,11 +23,22 @@ class Board():
                 valid_columns.append(j)
         return valid_columns
 
+    def get_children(self, piece):
+        children = []
+        for column in self.get_valid_columns():
+            child = copy.deepcopy(self)
+            child.drop_piece(column, piece)
+            children.append((column, child))
+        return children
+
     def is_full(self):
         for row in self.board:
             if EMPTY in row:
                 return False
         return True
+
+    def get_piece(self, row, col):
+        return self.board[row][col]
 
     def won_game(self, piece):
         # check rows
@@ -59,6 +72,3 @@ class Board():
                     return True
 
         return False
-
-    def get_piece(self, row, col):
-        return self.board[row][col]
