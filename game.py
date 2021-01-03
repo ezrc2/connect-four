@@ -41,11 +41,13 @@ class ConnectFour:
         while not game_over:
             self.draw_board()
 
-            if self.board.won_game(HUMAN_PIECE) or self.board.won_game(AI_PIECE):
+            if self.board.is_full() or self.board.won_game(HUMAN_PIECE) or self.board.won_game(AI_PIECE):
                 if self.board.won_game(HUMAN_PIECE):
                     text = self.font.render("You win!", True, BLACK)
-                else:
+                elif self.board.won_game(AI_PIECE):
                     text = self.font.render("You lose!", True, BLACK)
+                else:
+                    text = self.font.render("Tie", True, BLACK)
 
                 text_rect = text.get_rect(center=(SQUARE_SIZE * COLUMNS / 2, SQUARE_SIZE / 2))
                 self.display.blit(text, text_rect)
@@ -93,16 +95,15 @@ class ConnectFour:
                     color = YELLOW
 
                 pygame.draw.circle(self.display, color, center, CIRCLE_RADIUS)
-                pygame.draw.circle(self.display, BLACK, center, CIRCLE_RADIUS, LINE_WIDTH)
+                pygame.draw.circle(self.display, BLACK, center, CIRCLE_RADIUS, LINE_WIDTH) # circle outline
 
     def draw_next_piece(self, column):
         center = ((column + 0.5) * SQUARE_SIZE, SQUARE_SIZE / 2)
         pygame.draw.circle(self.display, RED, center, CIRCLE_RADIUS)
 
     def handle_mouse_click(self, column):
-        if self.human_turn:
-            self.board.drop_piece(column, HUMAN_PIECE)
-            self.human_turn = False
+        self.board.drop_piece(column, HUMAN_PIECE)
+        self.human_turn = False
 
 
 if __name__ == "__main__":
