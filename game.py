@@ -21,8 +21,6 @@ LINE_WIDTH = 3
 SQUARE_SIZE = 100
 CIRCLE_RADIUS = 40
 
-DEPTH = 4
-
 class ConnectFour:
 
     def __init__(self):
@@ -31,10 +29,9 @@ class ConnectFour:
         pygame.font.init()
         self.display = pygame.display.set_mode((COLUMNS * SQUARE_SIZE, (ROWS + 1) * SQUARE_SIZE))
         pygame.display.set_caption("Connect Four")
-        self.font = pygame.font.SysFont("Consolas", 90)
 
         self.board = Board(EMPTY, ROWS, COLUMNS)
-        self.ai_player = Minimax(DEPTH)
+        self.ai_player = Minimax()
         self.human_turn = True
 
     def run_game_loop(self):
@@ -74,6 +71,8 @@ class ConnectFour:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         sys.exit()
+                    if event.type == pygame.KEYDOWN:
+                        ConnectFour().run_game_loop()
 
     def draw_board(self):
         pygame.draw.rect(self.display, BLUE, (0, SQUARE_SIZE, COLUMNS * SQUARE_SIZE, (ROWS + 1) * SQUARE_SIZE))
@@ -98,15 +97,24 @@ class ConnectFour:
         pygame.draw.circle(self.display, RED, center, CIRCLE_RADIUS)
 
     def show_end_message(self):
-        if self.board.won_game(HUMAN_PIECE):
-            text = self.font.render("You win!", True, BLACK)
-        elif self.board.won_game(AI_PIECE):
-            text = self.font.render("You lose!", True, BLACK)
-        else:
-            text = self.font.render("Tie", True, BLACK)
+        large_font = pygame.font.SysFont("Consolas", 90)
+        small_font = pygame.font.SysFont("Calibri", 15)
 
-        text_rect = text.get_rect(center=(SQUARE_SIZE * COLUMNS / 2, SQUARE_SIZE / 2))
-        self.display.blit(text, text_rect)
+        if self.board.won_game(HUMAN_PIECE):
+            large_text = large_font.render("You win!", True, BLACK)
+        elif self.board.won_game(AI_PIECE):
+            large_text = large_font.render("You lose!", True, BLACK)
+        else:
+            large_text = large_font.render("Tie", True, BLACK)
+
+        large_rect = large_text.get_rect(center=(SQUARE_SIZE * COLUMNS / 2, SQUARE_SIZE / 2))
+        self.display.blit(large_text, large_rect)
+
+        small_text = small_font.render("Press any key to play again.", True, BLACK)
+        small_rect = small_text.get_rect(center=(SQUARE_SIZE * COLUMNS / 2, SQUARE_SIZE - 10))
+        self.display.blit(small_text, small_rect)
+
+
 
 
 if __name__ == "__main__":
