@@ -38,44 +38,36 @@ class ConnectFour:
         self.human_turn = True
 
     def run_game_loop(self):
-        clock = pygame.time.Clock()
         game_over = False
         while not game_over:
             self.draw_board()
 
             if self.board.is_full() or self.board.won_game(HUMAN_PIECE) or self.board.won_game(AI_PIECE):
-                if self.board.won_game(HUMAN_PIECE):
-                    text = self.font.render("You win!", True, BLACK)
-                elif self.board.won_game(AI_PIECE):
-                    text = self.font.render("You lose!", True, BLACK)
-                else:
-                    text = self.font.render("Tie", True, BLACK)
-
-                text_rect = text.get_rect(center=(SQUARE_SIZE * COLUMNS / 2, SQUARE_SIZE / 2))
-                self.display.blit(text, text_rect)
-
+                self.show_end_message()
                 game_over = True
 
             valid_columns = self.board.get_valid_columns()
             mouse_column = pygame.mouse.get_pos()[0] // SQUARE_SIZE
 
-            if not self.human_turn:
-                ai_move = self.ai_player.find_move(self.board)
-                self.board.drop_piece(ai_move, AI_PIECE)
-                self.human_turn = True
-            else:
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        sys.exit()
-                    if event.type == pygame.MOUSEBUTTONDOWN and mouse_column in valid_columns:
-                        self.board.drop_piece(mouse_column, HUMAN_PIECE)
-                        self.human_turn = False
-
             if not game_over:
                 self.draw_next_piece(mouse_column)
 
             pygame.display.update()
-            clock.tick(60)
+
+            if not game_over:
+                if self.human_turn:
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            sys.exit()
+                        if event.type == pygame.MOUSEBUTTONDOWN and mouse_column in valid_columns:
+                            self.board.drop_piece(mouse_column, HUMAN_PIECE)
+                            self.human_turn = False
+                else:
+                    ai_move = self.ai_player.find_move(self.board)
+                    self.board.drop_piece(ai_move, AI_PIECE)
+                    self.human_turn = True
+
+            pygame.display.update()
 
         if game_over:
             while True:
@@ -105,6 +97,16 @@ class ConnectFour:
         center = ((column + 0.5) * SQUARE_SIZE, SQUARE_SIZE / 2)
         pygame.draw.circle(self.display, RED, center, CIRCLE_RADIUS)
 
+    def show_end_message(self):
+        if self.board.won_game(HUMAN_PIECE):
+            text = self.font.render("You win!", True, BLACK)
+        elif self.board.won_game(AI_PIECE):
+            text = self.font.render("You lose!", True, BLACK)
+        else:
+            text = self.font.render("Tie", True, BLACK)
+
+        text_rect = text.get_rect(center=(SQUARE_SIZE * COLUMNS / 2, SQUARE_SIZE / 2))
+        self.display.blit(text, text_rect)
 
 
 if __name__ == "__main__":
