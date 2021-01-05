@@ -21,6 +21,8 @@ LINE_WIDTH = 3
 SQUARE_SIZE = 100
 CIRCLE_RADIUS = 40
 
+DEPTH = 4
+
 class ConnectFour:
 
     def __init__(self):
@@ -32,7 +34,7 @@ class ConnectFour:
         self.font = pygame.font.SysFont("Consolas", 90)
 
         self.board = Board(EMPTY, ROWS, COLUMNS)
-        self.ai = Minimax()
+        self.ai_player = Minimax(DEPTH)
         self.human_turn = True
 
     def run_game_loop(self):
@@ -54,21 +56,20 @@ class ConnectFour:
 
                 game_over = True
 
+            valid_columns = self.board.get_valid_columns()
             mouse_column = pygame.mouse.get_pos()[0] // SQUARE_SIZE
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
-                if self.human_turn:
-                    print(mouse_column)
-                    print(self.board.get_valid_columns())
-                    if event.type == pygame.MOUSEBUTTONDOWN and mouse_column in self.board.get_valid_columns():
-                        self.handle_mouse_click(mouse_column)
-                else:
-                    self.ai.find_move(self.board)
 
             if not self.human_turn:
-                self.board.drop_piece(0, AI_PIECE)
+                ai_move = self.ai_player.find_move(self.board)
+                self.board.drop_piece(ai_move, AI_PIECE)
                 self.human_turn = True
+            else:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        sys.exit()
+                    if event.type == pygame.MOUSEBUTTONDOWN and mouse_column in valid_columns:
+                        self.board.drop_piece(mouse_column, HUMAN_PIECE)
+                        self.human_turn = False
 
             if not game_over:
                 self.draw_next_piece(mouse_column)
@@ -104,9 +105,6 @@ class ConnectFour:
         center = ((column + 0.5) * SQUARE_SIZE, SQUARE_SIZE / 2)
         pygame.draw.circle(self.display, RED, center, CIRCLE_RADIUS)
 
-    def handle_mouse_click(self, column):
-        self.board.drop_piece(column, HUMAN_PIECE)
-        self.human_turn = False
 
 
 if __name__ == "__main__":
