@@ -4,16 +4,14 @@ EMPTY = 0
 HUMAN_PLAYER = 1
 AI_PLAYER = 2
 
+DEPTH = 4
 INITIAL_ALPHA = -math.inf
 INITIAL_BETA = math.inf
 
 class Minimax():
 
-    def __init__(self, depth):
-        self.depth = depth
-
     def find_move(self, board):
-        move = self.minimax(board, self.depth, INITIAL_ALPHA, INITIAL_BETA, True)[0]
+        move = self.minimax(board, DEPTH, INITIAL_ALPHA, INITIAL_BETA, True)[0]
         return move
 
     def get_heuristic(self, board):
