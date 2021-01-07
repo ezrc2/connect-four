@@ -71,7 +71,7 @@ class ConnectFour:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         sys.exit()
-                    if event.type == pygame.KEYDOWN:
+                    if event.type == pygame.MOUSEBUTTONDOWN:
                         ConnectFour().run_game_loop()
 
     def draw_board(self):
@@ -110,7 +110,7 @@ class ConnectFour:
         large_rect = large_text.get_rect(center=(SQUARE_SIZE * COLUMNS / 2, SQUARE_SIZE / 2))
         self.display.blit(large_text, large_rect)
 
-        small_text = small_font.render("Press any key to play again.", True, BLACK)
+        small_text = small_font.render("Click anywhere to play again.", True, BLACK)
         small_rect = small_text.get_rect(center=(SQUARE_SIZE * COLUMNS / 2, SQUARE_SIZE - 10))
         self.display.blit(small_text, small_rect)
 
