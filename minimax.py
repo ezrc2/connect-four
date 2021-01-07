@@ -44,9 +44,9 @@ class Minimax():
         heuristic = 0
 
         if streak.count(AI_PLAYER) == 4:
-            heuristic += math.inf
+            heuristic += 10000
         elif streak.count(AI_PLAYER) == 3 and streak.count(EMPTY) == 1:
-            heuristic += 5
+            heuristic += 10
         elif streak.count(AI_PLAYER) == streak.count(EMPTY) == 2:
             heuristic += 1
         elif streak.count(HUMAN_PLAYER) == streak.count(EMPTY) == 2:
@@ -54,7 +54,7 @@ class Minimax():
         elif streak.count(HUMAN_PLAYER) == 3 and streak.count(EMPTY) == 1:
             heuristic -= 5
         elif streak.count(HUMAN_PLAYER) == 4:
-            heuristic -= 10000
+            heuristic -= 1000
 
         return heuristic
 
@@ -88,7 +88,7 @@ class Minimax():
                 if score < best_score:
                     best_score = score
                     best_move = move
-                alpha = min(alpha, score)
+                beta = min(beta, score)
                 if alpha >= beta:
                     break
 
