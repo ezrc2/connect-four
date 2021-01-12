@@ -1,5 +1,5 @@
 # connect-four
-Single player Connect Four game using Minimax and Alpha-beta pruning.
+Connect Four AI using Minimax and Alpha-beta pruning.
 
 ### Requirements
 ```
@@ -10,4 +10,5 @@ pip install -r requirements.txt
 ```
 python3 game.py
 ```
-Click on a column to drop a piece.
+
+Click a column on the board to drop your piece and the AI will automatically make its move.
