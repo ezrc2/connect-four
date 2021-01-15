@@ -38,33 +38,31 @@ class ConnectFour:
         game_over = False
         while not game_over:
             self.draw_board()
-
+            
             if self.board.is_full() or self.board.won_game(HUMAN_PIECE) or self.board.won_game(AI_PIECE):
                 self.show_end_message()
                 game_over = True
+                break
 
             valid_columns = self.board.get_valid_columns()
             mouse_column = pygame.mouse.get_pos()[0] // SQUARE_SIZE
 
-            if not game_over:
-                self.draw_next_piece(mouse_column)
-
+            self.draw_next_piece(mouse_column)
             pygame.display.update()
 
-            if not game_over:
-                if self.human_turn:
-                    for event in pygame.event.get():
-                        if event.type == pygame.QUIT:
-                            sys.exit()
-                        if event.type == pygame.MOUSEBUTTONDOWN and mouse_column in valid_columns:
-                            self.board.drop_piece(mouse_column, HUMAN_PIECE)
-                            self.human_turn = False
-                else:
-                    ai_move = self.ai_player.find_move(self.board)
-                    self.board.drop_piece(ai_move, AI_PIECE)
-                    self.human_turn = True
+            if self.human_turn:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        sys.exit()
+                    if event.type == pygame.MOUSEBUTTONDOWN and mouse_column in valid_columns:
+                        self.board.drop_piece(mouse_column, HUMAN_PIECE)
+                        self.human_turn = False
+            else:
+                ai_move = self.ai_player.find_move(self.board)
+                self.board.drop_piece(ai_move, AI_PIECE)
+                self.human_turn = True
 
-            pygame.display.update()
+        pygame.display.update()
 
         if game_over:
             while True:
@@ -82,9 +80,8 @@ class ConnectFour:
             for j in range(COLUMNS):
                 center = ((j  +  0.5) * SQUARE_SIZE, (i  +  1.5) * SQUARE_SIZE)
                 piece = self.board.get_piece(i, j)
-                if piece == 0:
-                    color = WHITE
-                elif piece == HUMAN_PIECE:
+                color = WHITE
+                if piece == HUMAN_PIECE:
                     color = RED
                 elif piece == AI_PIECE:
                     color = YELLOW
